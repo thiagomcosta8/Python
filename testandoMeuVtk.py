@@ -18,7 +18,6 @@ class MainWindow(Qt.QMainWindow):
         self.label2 = QtWidgets.QLabel("Digite a altura da forma")
         self.label3 = QtWidgets.QLabel("Digite a largura da forma")
         self.label4 = QtWidgets.QLabel("Digite a profundidade da forma")
-        self.botao = QtWidgets.QPushButton("Aplicar")
 
         self.editAltura = QtWidgets.QSpinBox()
         self.editAltura.setMinimum(1)
@@ -26,19 +25,21 @@ class MainWindow(Qt.QMainWindow):
         self.editAltura.setSingleStep(1)
         self.editAltura.setValue(10)
         self.editAltura.valueChanged.connect(self.atualizarDesenho)
-        #self.editAltura.value()
+       
         
         self.editLargura = QtWidgets.QSpinBox()
         self.editLargura.setMinimum(1)
         self.editLargura.setMaximum(50)
         self.editLargura.setSingleStep(1)
         self.editLargura.setValue(20)
+        self.editLargura.valueChanged.connect(self.atualizarDesenho)
         
         self.editProfundidade = QtWidgets.QSpinBox()
         self.editProfundidade.setMinimum(1)
         self.editProfundidade.setMaximum(50)
         self.editProfundidade.setSingleStep(1)
         self.editProfundidade.setValue(30)
+        self.editProfundidade.valueChanged.connect(self.atualizarDesenho)
 
         self.vLayout.addWidget(self.label1)
         self.vLayout.addWidget(self.label2)
@@ -47,7 +48,6 @@ class MainWindow(Qt.QMainWindow):
         self.vLayout.addWidget(self.editLargura)
         self.vLayout.addWidget(self.label4)
         self.vLayout.addWidget(self.editProfundidade)
-        self.vLayout.addWidget(self.botao)
         self.vLayout.addStretch(1)
 
         self.hLayout.addLayout(self.vLayout)
@@ -56,34 +56,28 @@ class MainWindow(Qt.QMainWindow):
         self.vtkWidget = QVTKRenderWindowInteractor(self.frame)
         self.hLayout.addWidget(self.vtkWidget)
 
-        #self.setLayout(self.hLayout)
+        self.setLayout(self.hLayout)
 
         self.ren = vtk.vtkRenderer()
         self.vtkWidget.GetRenderWindow().AddRenderer(self.ren)
         self.iren = self.vtkWidget.GetRenderWindow().GetInteractor()
 
         # Create source
-        source = vtk.vtkCubeSource()
-        source.SetCenter(0, 0, 0)
-        source.SetXLength(10)
-        source.SetYLength(20)
-        source.SetZLength(30)
-
-        source2 = vtk.vtkCubeSource()
-        source2.SetCenter(100, 100, 100)
-        source2.SetXLength(10)
-        source2.SetYLength(20)
-        source2.SetZLength(30)
+        self.source = vtk.vtkCubeSource()
+        self.source.SetCenter(0, 0, 0)
+        self.source.SetXLength(10)
+        self.source.SetYLength(20)
+        self.source.SetZLength(30)
 
         # Create a mapper
-        mapper = vtk.vtkPolyDataMapper()
-        mapper.SetInputConnection(source.GetOutputPort())
+        self.mapper = vtk.vtkPolyDataMapper()
+        self.mapper.SetInputConnection(self.source.GetOutputPort())
 
         # Create an actor
-        actor = vtk.vtkActor()
-        actor.SetMapper(mapper)
+        self.actor = vtk.vtkActor()
+        self.actor.SetMapper(self.mapper)
 
-        self.ren.AddActor(actor)
+        self.ren.AddActor(self.actor)
 
         self.ren.ResetCamera()
 
@@ -95,9 +89,10 @@ class MainWindow(Qt.QMainWindow):
         self.iren.Start()
 
     def atualizarDesenho(self):
-        source.SetXLength(40)
-        source.SetYLength(40)
-        source.SetZLength(40)
+        self.source.SetXLength(self.editAltura.value())
+        self.source.SetYLength(self.editLargura.value())
+        self.source.SetZLength(self.editProfundidade.value())
+        self.vtkWidget.GetRenderWindow().Render()
 
 if __name__ == "__main__":
     app = Qt.QApplication(sys.argv)
