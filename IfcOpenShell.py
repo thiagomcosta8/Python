@@ -10,9 +10,7 @@ products = ifc_file.by_type('IfcProduct')
 #    print(product.is_a())
 #    print(product) # Prints #38=IfcWall('3OFfnkBQ0HwPPAt4e_Z09T',#5,'Wall','',$,#35,#37,$)
 
-wall = ifc_file.by_type('IfcBeam')[0]
-#pprint(wall)
-##pprint(getmembers(wall))
-#print(wall.GlobalId)
-#print(wall.Name)
-print(wall.get_info())
+beam = ifc_file.by_type('IfcBeam')[0]
+#pprint(beam)
+#print(getmembers(beam))
+print(beam.get_info())
